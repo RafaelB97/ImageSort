@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -56,8 +58,8 @@ public class FileManager {
         System.out.println("+++++++++++++++++++++++++++++++++");
     }
 
-    public Optional<Calendar> getDate(File image) throws ImageProcessingException, IOException {
-        Metadata metadata = ImageMetadataReader.readMetadata(image);
+    public Optional<Calendar> getDate(Path image) throws ImageProcessingException, IOException {
+        Metadata metadata = ImageMetadataReader.readMetadata(image.toFile());
         val directory = metadata.getFirstDirectoryOfType(FileSystemDirectory.class);
         System.out.println(directory);
 
@@ -66,7 +68,7 @@ public class FileManager {
             return Optional.empty();
         }
 
-        val type  = getFileType(image.getName());
+        val type  = getFileType(image.toString());
         System.out.println(type);
         val date = directory.getDate(FileSystemDirectory.TAG_FILE_MODIFIED_DATE);
 
@@ -79,5 +81,22 @@ public class FileManager {
         cal.setTime(date);
         System.out.println(cal.get(Calendar.DATE) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR));
         return Optional.of(cal);
+    }
+
+    public void moveFile(Path file, Calendar cal) throws IOException {
+        System.out.println(file.getFileName());
+        val date = String.format("%02d", cal.get(Calendar.DATE));
+        val month = String.format("%02d", cal.get(Calendar.MONTH));
+        val monthName = Month.of(cal.get(Calendar.MONTH))
+                .getDisplayName(
+                        TextStyle.FULL,
+                        Locale.ENGLISH
+                );
+        val year = Integer.toString(cal.get(Calendar.YEAR));
+        val newPath = Path.of(file.getParent().toString(), year, month+"-"+monthName, date);
+        Files.createDirectories(newPath);
+        val newFile = Path.of(newPath.toString(), file.getFileName().toString());
+        System.out.println(newFile);
+        Files.copy(file, newFile);
     }
 }

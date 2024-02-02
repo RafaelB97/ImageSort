@@ -5,6 +5,7 @@ package imagesort;
 
 import com.drew.imaging.ImageProcessingException;
 import imagesort.file.FileManager;
+import lombok.val;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,8 +20,11 @@ public class App {
     public static void test(String path) throws ImageProcessingException, IOException {
         var file = Path.of(path);
         var fm = new FileManager();
-        Optional<Calendar> opt = fm.getDate(file.toFile());
-        opt.ifPresent(System.out::println);
+        Optional<Calendar> opt = fm.getDate(file);
+        if (opt.isPresent()) {
+            val cal = opt.get();
+            fm.moveFile(file, cal);
+        }
 
         /*
         FileManager fm = new FileManager();
