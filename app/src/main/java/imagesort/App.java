@@ -5,40 +5,25 @@ package imagesort;
 
 import com.drew.imaging.ImageProcessingException;
 import imagesort.file.FileManager;
-import lombok.val;
+import imagesort.file.ImageFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Calendar;
-import java.util.Optional;
+import java.util.List;
 
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
-    public static void test(String path) throws ImageProcessingException, IOException {
+    public static void testOne(String path) throws ImageProcessingException, IOException {
         var file = Path.of(path);
-        var fm = new FileManager();
-        Optional<Calendar> opt = fm.getDate(file);
-        if (opt.isPresent()) {
-            val cal = opt.get();
-            fm.moveFile(file, cal);
-        }
-
-        /*
-        FileManager fm = new FileManager();
-        var files = fm.getFiles(path);
-        files.forEach(file -> {
-            System.out.println(file);
-            try {
-//                FileManager.readImageMetadata(file.toFile());
-                fm.getDate(file.toFile());
-            } catch (ImageProcessingException | IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-         */
+        new ImageFile(file).move();
+//        new ImageFile(file).printAllMetadata();
+    }
+    public static void testAll(String path) throws IOException {
+        FileManager fm = new FileManager(path);
+        fm.moveAllImages();
     }
 
     public static void main(String[] args) throws ImageProcessingException, IOException {
