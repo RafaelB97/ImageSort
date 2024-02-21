@@ -4,8 +4,10 @@
 package imagesort;
 
 import com.drew.imaging.ImageProcessingException;
+import imagesort.cli.CLI;
 import imagesort.file.FileManager;
 import imagesort.file.ImageFile;
+import picocli.CommandLine;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,5 +29,6 @@ public class App {
     }
 
     public static void main(String[] args) throws ImageProcessingException, IOException {
+        new CommandLine(new CLI()).execute(args);
     }
 }

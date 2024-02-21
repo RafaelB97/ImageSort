@@ -32,6 +32,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
+
+    // https://mvnrepository.com/artifact/info.picocli/picocli
+    implementation 'info.picocli:picocli:4.7.5'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -49,4 +52,10 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'imagesort.App')
+    }
 }
